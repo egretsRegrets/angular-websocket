@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+
 import { WebsocketService } from './websocket.service';
 import { ChatService, IMessage } from './chat.service';
 
@@ -11,8 +12,10 @@ import { ChatService, IMessage } from './chat.service';
 export class AppComponent implements OnInit {
   message: IMessage = {
     author: 'dev',
-    message: 'This is a test message'
+    message: ''
   };
+
+  clientMessage = '';
 
   constructor(private chatService: ChatService) {}
 
@@ -22,6 +25,7 @@ export class AppComponent implements OnInit {
 
   public sendMessage() {
     console.log(`new message from client to websocket`);
+    this.message.message = this.clientMessage;
     // introduce message into messages stream
     this.chatService.messages.next(this.message);
     // wipe local message content

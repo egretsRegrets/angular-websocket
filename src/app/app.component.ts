@@ -1,10 +1,30 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { WebsocketService } from './websocket.service';
+import { ChatService, IMessage } from './chat.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers: [ChatService, WebsocketService]
 })
-export class AppComponent {
-  title = 'app';
+export class AppComponent implements OnInit {
+  message: IMessage = {
+    author: 'dev',
+    message: 'This is a test message'
+  };
+
+  constructor(private chatService: ChatService) {}
+
+  ngOnInit() {
+    this.chatService.messages.subscribe((msg: IMessage) => console.log(`response from websocket: ${msg.message}`));
+  }
+
+  public sendMessage() {
+    console.log(`new message from client to websocket`);
+    // introduce message into messages stream
+    this.chatService.messages.next(this.message);
+    // wipe local message content
+    this.message.message = '';
+  }
 }
